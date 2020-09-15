@@ -1,0 +1,14 @@
+total 40
+drwxr-xr-x 2 gvdelacruz gvdelacruz  4096 Sep  8 14:49 .
+drwxr-xr-x 4 gvdelacruz gvdelacruz  4096 Sep  8 14:45 ..
+-rwxr-xr-x 1 gvdelacruz gvdelacruz 16736 Sep  8 14:45 charcount
+-rw-r--r-- 1 gvdelacruz gvdelacruz   311 Sep  8 14:45 charcount.c
+-rw-r--r-- 1 gvdelacruz gvdelacruz     0 Sep  8 14:49 listings
+-rw-r--r-- 1 gvdelacruz gvdelacruz     3 Sep  8 14:48 someOtherFile
+-rw-r--r-- 1 gvdelacruz gvdelacruz    14 Sep  8 14:46 string
+charcount
+charcount.c
+listing
+listings
+someOtherFile
+string
