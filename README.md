@@ -1,1 +1,1 @@
-# lecture
+# CS270 Materials
