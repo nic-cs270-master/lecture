@@ -1,5 +1,5 @@
 /**
- * @file more01.c
+ * @file more02.c
  * @author Gabe de la Cruz (gvdelacruz@nic.edu)
  * @brief Read and print 24 lines then pause for a few special commands
  *        feature of version 0.2: reads from /dev/tty for commands
@@ -51,16 +51,18 @@ int main(int argc, char **argv)
  */
 void doMore(FILE *fp)
 {
+    char line[LINELEN];
+    int numOfLines = 0;
+    FILE *fptty;
+
     // cmd stream
-    FILE *fptty = fopen("/dev/tty", "r");
+    fptty = fopen("/dev/tty", "r");
     if (fptty == NULL)
     {
         exit(1);
     }
 
     // more input
-    char line[LINELEN];
-    int numOfLines = 0;
     while (fgets(line, LINELEN, fp))
     {
         // full screen?
