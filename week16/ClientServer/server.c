@@ -1,5 +1,12 @@
-/* A simple server in the internet domain using TCP
-   The port number is passed as an argument */
+/**
+ * @file server.c
+ * @author NIC CS270
+ * @brief A simple server in the internet domain using TCP
+ *        The port number is passed as an argument
+ * @version 0.1
+ * @date 2020-12-10
+ * 
+ */
 #include <stdio.h>
 #include <string.h> // memset()
 #include <stdlib.h> // exit(), atoi()
@@ -16,44 +23,65 @@ void error(char *msg)
 
 int main(int argc, char *argv[])
 {
-     int sockfd, newsockfd, portno, clilen;
-     char buffer[256];
-     struct sockaddr_in serv_addr, cli_addr;
-     int n;
+    if (argc < 2) 
+    {
+        fprintf(stderr,"ERROR, no port provided\n");
+        exit(1);
+    }
 
-     if (argc < 2) {
-         fprintf(stderr,"ERROR, no port provided\n");
-         exit(1);
-     }
-
-     sockfd = socket(AF_INET, SOCK_STREAM, 0);
-     if (sockfd < 0) 
+    int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    if (sockfd < 0) 
+    {
         error("ERROR opening socket");
+    }
 
-     memset((char *) &serv_addr, 0, sizeof(serv_addr));
-     portno = atoi(argv[1]);
-     serv_addr.sin_family = AF_INET;
-     serv_addr.sin_addr.s_addr = INADDR_ANY;
-     serv_addr.sin_port = htons(portno);
-     if (bind(sockfd, (struct sockaddr *) &serv_addr,
-              sizeof(serv_addr)) < 0) 
-              error("ERROR on binding");
+    // port number from command-line args
+    int portno = atoi(argv[1]);             
 
-     listen(sockfd,5);
-     clilen = sizeof(cli_addr);
-     newsockfd = accept(sockfd, 
-                 (struct sockaddr *) &cli_addr, 
-                 &clilen);
-     if (newsockfd < 0) 
-          error("ERROR on accept");
+    // setup server information
+    struct sockaddr_in serv_addr;
+    memset((char *) &serv_addr, 0, sizeof(serv_addr));
+    serv_addr.sin_family = AF_INET;         // AF_INET => TCP/IP protocol
+    serv_addr.sin_addr.s_addr = INADDR_ANY; // socket will be bound to all local interfaces
+    serv_addr.sin_port = htons(portno);     // set port number
 
-     memset(buffer, 0, 256);
-     n = read(newsockfd,buffer,255);
+    // bind a socket to a socket address
+    if (bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) 
+    {
+        error("ERROR on binding");
+    }
+    // listen indicates socket is ready to accept incoming connections
+    listen(sockfd, 5);
 
-     if (n < 0) error("ERROR reading from socket");
-     printf("Here is the message: %s\n",buffer);
-     n = write(newsockfd,"I got your message",18);
-     if (n < 0) error("ERROR writing to socket");
+    // use to store client's IP and port
+    struct sockaddr_in cli_addr;
+    int clilen = sizeof(cli_addr);
 
-     return 0; 
+    // accept() blocks the caller until a connection is present
+    int newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
+    if (newsockfd < 0) 
+    {
+        error("ERROR on accept");
+    }
+
+    // Read data from clients
+    char buffer[256];
+    memset(buffer, 0, 256); // Why zero-out the buffer?
+    int n = read(newsockfd, buffer, 255);
+    if (n < 0) 
+    {
+        error("ERROR reading from socket");
+    }
+
+    printf("Here is the message: %s\n", buffer);
+
+    // Reply back a message to the client (Confirmation)
+    n = write(newsockfd, "I got your message", 18);
+    
+    if (n < 0)
+    {
+        error("ERROR writing to socket");
+    }
+
+    return 0; 
 }
